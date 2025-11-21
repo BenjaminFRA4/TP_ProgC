@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 
 int main() {
@@ -7,16 +6,31 @@ int main() {
     int i; // Compteur pour la ligne (niveau de la pyramide)
     int j; // Compteur pour les boucles internes (espaces et nombres)
 
-    // Initialisation : n détermine la hauteur de la pyramide
-    n = 5;
+    printf("--- Génération interactive d'une pyramide de nombres ---\n");
+    
+    // 1. Demander à l'utilisateur de saisir la hauteur (n)
+    printf("Veuillez saisir la hauteur de la pyramide (un nombre entier, par exemple 9) : ");
+    
+    // Lire l'entrée de l'utilisateur
+    if (scanf("%d", &n) != 1) {
+        // Gérer le cas où l'entrée n'est pas un entier
+        fprintf(stderr, "Erreur : Saisie invalide. Veuillez entrer un nombre entier.\n");
+        return 1; // Quitter avec un code d'erreur
+    }
 
-    printf("--- Génération d'une pyramide de nombres centrée (Hauteur : %d) ---\n\n", n);
+    // Vérification simple de la hauteur pour une meilleure expérience
+    if (n <= 0) {
+        printf("La hauteur doit être supérieure à zéro. La pyramide ne peut pas être générée.\n");
+        return 0;
+    }
+    
+    printf("\n>>> Génération d'une pyramide de hauteur : %d <<<\n\n", n);
 
-    // Boucle principale : Ière boucle - Itère sur chaque ligne (niveau) de 1 à n
+    // Boucle principale : Itère sur chaque ligne (niveau) de 1 à n
     for (i = 1; i <= n; i++) {
         
         // 1. Boucle pour afficher les ESPACES (Centrage)
-        // La ligne 'i' a besoin de n - i espaces au début.
+        // Affiche n - i espaces.
         for (j = 1; j <= n - i; j++) {
             printf(" ");
         }
@@ -27,12 +41,11 @@ int main() {
         }
 
         // 3. Boucle pour afficher la partie DÉCROISSANTE des nombres (de i-1 à 1)
-        // Cette boucle commence à i-1 pour éviter de répéter le nombre central 'i'.
         for (j = i - 1; j >= 1; j--) {
             printf("%d", j);
         }
 
-        // Passer à la ligne suivante pour commencer le niveau suivant
+        // Passer à la ligne suivante
         printf("\n");
     }
 
