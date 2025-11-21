@@ -13,16 +13,20 @@ int main() {
 
         for (int j = 1; j <= i; j++) {
 
+            // Lignes 1 et 2 : que des *
             if (i == 1 || i == 2) {
-                // Lignes 1 et 2 : uniquement des "*"
                 printf("* ");
             }
+            // Dernière ligne : que des *
+            else if (i == compteur) {
+                printf("* ");
+            }
+            // Bords : *
             else if (j == 1 || j == i) {
-                // Bords : "*"
                 printf("* ");
             }
+            // Milieu : #
             else {
-                // Milieu : "#"
                 printf("# ");
             }
         }
@@ -43,6 +47,9 @@ int main() {
         while (j <= i) {
 
             if (i == 1 || i == 2) {
+                printf("* ");
+            }
+            else if (i == compteur) {
                 printf("* ");
             }
             else if (j == 1 || j == i) {
