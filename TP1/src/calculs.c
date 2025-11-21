@@ -7,16 +7,18 @@ int main() {
 
     printf("=== Programme de calcul interactif ===\n\n");
 
-    // Saisie des nombres
+    // Saisie des nombres avec flush pour forcer l'affichage
     printf("Entrez num1 : ");
+    fflush(stdout);
     scanf("%d", &num1);
 
     printf("Entrez num2 : ");
+    fflush(stdout);
     scanf("%d", &num2);
 
-    // Saisie de l'opérateur
     printf("Entrez un operateur (+, -, *, /, %%, &, |, ~) : ");
-    scanf(" %c", &op);   // Note : espace avant %c pour éviter de capter un retour à la ligne
+    fflush(stdout);
+    scanf(" %c", &op);
 
     printf("\n--- RESULTAT ---\n");
 
@@ -66,5 +68,3 @@ int main() {
 
     return 0;
 }
-
-
