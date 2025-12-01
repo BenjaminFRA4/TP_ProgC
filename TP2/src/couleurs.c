@@ -6,7 +6,6 @@
 
 // =========================================================================
 // 1. Définition de la structure CouleurRGBA
-// Chaque composant est un octet (unsigned char) pour contenir 0 à 255.
 // =========================================================================
 struct CouleurRGBA {
     unsigned char R; // Rouge (Red)
@@ -17,25 +16,50 @@ struct CouleurRGBA {
 
 int main() {
     
-    // 2. Création d'un tableau de 10 éléments de cette structure
+    // 2. Création d'un tableau de 10 structures
     struct CouleurRGBA palette[NB_COULEURS];
     int i; 
 
     printf("--- Gestion des Couleurs au Format RGBA avec Structures ---\n\n");
 
     // =========================================================================
-    // 3. Initialisation des 10 couleurs en notation hexadécimale (0xNN)
+    // 3. Initialisation des 10 couleurs en notation hexadécimale
     // =========================================================================
     
-    // Les valeurs sont données en Hexadécimal (0x00 à 0xFF)
-    // Exemple : 0xef = 239, 0x78 = 120, 0x12 = 18, 0xff = 255
+    // Assurez-vous que chaque ligne se termine par un point-virgule ';' !
+    palette[0] = (struct CouleurRGBA){ .R = 0xEF, .G = 0x78, .B = 0x12, .A = 0xFF }; 
+    palette[1] = (struct CouleurRGBA){ .R = 0x2C, .G = 0xC8, .B = 0x64, .A = 0xFF }; 
+    palette[2] = (struct CouleurRGBA){ .R = 0xFF, .G = 0x00, .B = 0x00, .A = 0xFF }; 
+    palette[3] = (struct CouleurRGBA){ .R = 0x00, .G = 0x00, .B = 0xFF, .A = 0xFF }; 
+    palette[4] = (struct CouleurRGBA){ .R = 0x00, .G = 0xFF, .B = 0x00, .A = 0xFF }; 
+    palette[5] = (struct CouleurRGBA){ .R = 0x80, .G = 0x80, .B = 0x80, .A = 0xFF }; 
+    palette[6] = (struct CouleurRGBA){ .R = 0x00, .G = 0x00, .B = 0x00, .A = 0x80 }; 
+    
+    // Ligne 41 du précédent code (palette[8]) - doit être palette[7] ou [8] selon votre numérotation.
+    // Je mets palette[7] ici pour continuer la séquence :
+    palette[7] = (struct CouleurRGBA){ .R = 0xFF, .G = 0xFF, .B = 0xFF, .A = 0xFF }; 
+    
+    palette[8] = (struct CouleurRGBA){ .R = 0xC0, .G = 0xC0, .B = 0xC0, .A = 0xFF }; // C'est l'indice [8] dans le tableau (9ème couleur)
+    palette[9] = (struct CouleurRGBA){ .R = 0xDA, .G = 0xA5, .B = 0x20, .A = 0xFF }; // C'est l'indice [9] dans le tableau (10ème couleur)
 
-    palette[0] = (struct CouleurRGBA){ .R = 0xEF, .G = 0x78, .B = 0x12, .A = 0xFF }; // Couleur demandée dans l'exemple
-    palette[1] = (struct CouleurRGBA){ .R = 0x2C, .G = 0xC8, .B = 0x64, .A = 0xFF }; // Vert clair (Exemple 2)
-    palette[2] = (struct CouleurRGBA){ .R = 0xFF, .G = 0x00, .B = 0x00, .A = 0xFF }; // Rouge pur
-    palette[3] = (struct CouleurRGBA){ .R = 0x00, .G = 0x00, .B = 0xFF, .A = 0xFF }; // Bleu pur
-    palette[4] = (struct CouleurRGBA){ .R = 0x00, .G = 0xFF, .B = 0x00, .A = 0xFF }; // Vert pur
-    palette[5] = (struct CouleurRGBA){ .R = 0x80, .G = 0x80, .B = 0x80, .A = 0xFF }; // Gris moyen
-    palette[6] = (struct CouleurRGBA){ .R = 0x00, .G = 0x00, .B = 0x00, .A = 0x80 }; // Noir (Semi-transparent)
-    palette[7] = (struct CouleurRGBA){ .R = 0xFF, .G = 0xFF, .B = 0xFF, .A = 0xFF }; // Blanc
-    palette[8] = (struct CouleurRGBA){ .R = 0xC0, .G = 0xC0, .B
+    // =========================================================================
+    // 4. Affichage des 10 couleurs
+    // =========================================================================
+    printf("========================================================\n");
+    printf("  Index | Rouge (R) | Vert (G) | Bleu (B) | Alpha (A) \n");
+    printf("========================================================\n");
+
+    for (i = 0; i < NB_COULEURS; i++) {
+        // Le format %u affiche l'unsigned char comme un entier non-signé (0-255)
+        printf("Couleur %2d :", i + 1);
+        // Affichage Décimal (u) et Hexadécimal (X)
+        printf("  %5u (0x%02X)", palette[i].R, palette[i].R);
+        printf("  %5u (0x%02X)", palette[i].G, palette[i].G);
+        printf("  %5u (0x%02X)", palette[i].B, palette[i].B);
+        printf("  %5u (0x%02X)\n", palette[i].A, palette[i].A);
+    }
+    
+    printf("========================================================\n");
+
+    return EXIT_SUCCESS; // FIN de la fonction main()
+} // FIN du fichier
