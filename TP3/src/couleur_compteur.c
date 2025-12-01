@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <stdbool.h> // Nécessaire pour le type booléen
+#include <stdbool.h> 
 
 #define TAILLE_MAX 100
-#define VAL_MAX_COMPOSANT 255 // Valeur maximale pour un octet
+// Nouvelle plage réduite pour garantir des répétitions (0 à 3)
+#define VAL_REPETITION_MAX 3 
 
 // =================================================================
 // 1. Définition des structures
@@ -12,16 +13,16 @@
 
 // Structure pour représenter une couleur (RGBA)
 struct Couleur {
-    unsigned char R; // Rouge (0-255)
-    unsigned char G; // Vert (0-255)
-    unsigned char B; // Bleu (0-255)
-    unsigned char A; // Alpha (0-255)
+    unsigned char R; 
+    unsigned char G; 
+    unsigned char B; 
+    unsigned char A; 
 };
 
 // Structure pour stocker les couleurs distinctes et leur compteur
 struct OccurenceCouleur {
-    struct Couleur c; // La couleur elle-même
-    int compteur;     // Son nombre d'occurrences
+    struct Couleur c; 
+    int compteur;     
 };
 
 // =================================================================
@@ -37,60 +38,58 @@ int main() {
     struct Couleur couleurs_originales[TAILLE_MAX];
     
     // Tableau pour stocker les couleurs distinctes et leurs comptes
-    // La taille maximale est la taille du tableau original (100)
     struct OccurenceCouleur couleurs_distinctes[TAILLE_MAX];
     
-    int nb_couleurs_distinctes = 0; // Compteur des couleurs distinctes trouvées
-    int i, j; // Compteurs de boucle
+    int nb_couleurs_distinctes = 0; 
+    int i, j; 
 
+    // Initialisation du générateur aléatoire (une seule fois)
     srand(time(NULL));
 
     printf("--- Compteur d'Occurrences de Couleurs Distinctes ---\n");
+    printf("> Les composants de couleur sont limités à la plage [0, %d] pour forcer des répétitions.\n\n", VAL_REPETITION_MAX);
     
-    // Remplissage du tableau initial avec des couleurs aléatoires
+    // Remplissage du tableau initial avec des couleurs aléatoires et répétées
     remplir_tableau_couleurs(couleurs_originales, TAILLE_MAX);
     
     // =================================================================
-    // 3. Algorithme de Comptage
+    // 2. Algorithme de Comptage (Recherche Linéaire pour les distinctes)
     // =================================================================
     
-    // Parcourir le tableau de couleurs originales
     for (i = 0; i < TAILLE_MAX; i++) {
         struct Couleur couleur_courante = couleurs_originales[i];
         int index_trouve = -1;
 
-        // A. Recherche : Vérifier si la couleur existe déjà dans le tableau des distinctes
+        // Recherche : Vérifier si la couleur existe déjà
         for (j = 0; j < nb_couleurs_distinctes; j++) {
             if (comparer_couleurs(couleur_courante, couleurs_distinctes[j].c)) {
                 index_trouve = j;
-                break; // Couleur trouvée, on arrête la recherche
+                break; 
             }
         }
 
-        // B. Mise à jour du compteur
+        // Mise à jour du compteur ou ajout
         if (index_trouve != -1) {
-            // Couleur déjà vue : incrémenter le compteur
             couleurs_distinctes[index_trouve].compteur++;
         } else {
-            // Nouvelle couleur : l'ajouter au tableau des distinctes
+            // Nouvelle couleur : l'ajouter
             if (nb_couleurs_distinctes < TAILLE_MAX) {
                 couleurs_distinctes[nb_couleurs_distinctes].c = couleur_courante;
                 couleurs_distinctes[nb_couleurs_distinctes].compteur = 1;
-                nb_couleurs_distinctes++; // Incrémenter le nombre total de couleurs distinctes
+                nb_couleurs_distinctes++; 
             }
-            // Note: Une gestion d'erreur serait nécessaire si nb_couleurs_distinctes atteignait TAILLE_MAX
         }
     }
 
     // =================================================================
-    // 4. Affichage du résultat
+    // 3. Affichage du résultat
     // =================================================================
-    printf("\nTotal de couleurs initiales : %d\n", TAILLE_MAX);
+    printf("Total de couleurs initiales : %d\n", TAILLE_MAX);
     printf("Nombre de couleurs distinctes trouvées : %d\n\n", nb_couleurs_distinctes);
     printf("--- Couleurs distinctes et leur nombre d'occurrences ---\n");
 
     for (i = 0; i < nb_couleurs_distinctes; i++) {
-        // Affichage de la couleur (R G B A)
+        // Affichage de la couleur (R G B A) en hexadécimal
         afficher_couleur(couleurs_distinctes[i].c);
         
         // Affichage du compteur
@@ -107,15 +106,17 @@ int main() {
 // =================================================================
 
 /**
- * Remplit le tableau avec des couleurs aléatoires.
+ * Remplit le tableau avec des couleurs aléatoires dans une plage réduite.
+ * MODIFIÉ pour utiliser VAL_REPETITION_MAX.
  */
 void remplir_tableau_couleurs(struct Couleur tab[], int taille) {
     int i;
+    int max = VAL_REPETITION_MAX; // Limite supérieure pour rand()
     for (i = 0; i < taille; i++) {
-        tab[i].R = (unsigned char)(rand() % (VAL_MAX_COMPOSANT + 1));
-        tab[i].G = (unsigned char)(rand() % (VAL_MAX_COMPOSANT + 1));
-        tab[i].B = (unsigned char)(rand() % (VAL_MAX_COMPOSANT + 1));
-        tab[i].A = (unsigned char)(rand() % (VAL_MAX_COMPOSANT + 1));
+        tab[i].R = (unsigned char)(rand() % (max + 1));
+        tab[i].G = (unsigned char)(rand() % (max + 1));
+        tab[i].B = (unsigned char)(rand() % (max + 1));
+        tab[i].A = (unsigned char)(rand() % (max + 1));
     }
 }
 
@@ -123,7 +124,6 @@ void remplir_tableau_couleurs(struct Couleur tab[], int taille) {
  * Compare deux structures Couleur et retourne true si elles sont identiques.
  */
 bool comparer_couleurs(struct Couleur c1, struct Couleur c2) {
-    // Les couleurs sont identiques si tous les composants (R, G, B, A) correspondent
     return (c1.R == c2.R &&
             c1.G == c2.G &&
             c1.B == c2.B &&
@@ -131,9 +131,9 @@ bool comparer_couleurs(struct Couleur c1, struct Couleur c2) {
 }
 
 /**
- * Affiche une couleur au format hexadécimal (comme dans l'exemple).
+ * Affiche une couleur au format hexadécimal.
  */
 void afficher_couleur(struct Couleur c) {
-    // Utiliser %02X pour afficher l'unsigned char en hexadécimal sur deux chiffres (avec zéro initial)
+    // %02X affiche l'unsigned char en hexadécimal sur deux chiffres
     printf("0x%02X 0x%02X 0x%02X 0x%02X", c.R, c.G, c.B, c.A);
 }
