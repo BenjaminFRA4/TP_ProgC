@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h> // Pour rand(), srand()
-#include <time.h>   // Pour time()
+#include <stdlib.h> 
+#include <time.h>   
 
 #define TAILLE 100 // Taille du tableau
 
@@ -20,17 +20,15 @@ int main() {
 
     printf("--- Recherche Dichotomique dans un Tableau Trié ---\n");
     
-    // 1. Remplissage, Tri et Affichage
+    // 1. Remplissage, Tri
     remplir_tableau(tableau, TAILLE);
     
-    printf("\nTableau initial généré (non trié) :\n");
-    afficher_tableau(tableau, TAILLE, "  ");
-    
-    // Étape CRUCIALE pour la recherche dichotomique
+    // Étape CRUCIALE : Tri du tableau
     tri_a_bulles(tableau, TAILLE);
+    
+    // Affichage UNIQUE du tableau trié (selon la consigne)
     printf("\nTableau trié par ordre croissant :\n");
     afficher_tableau(tableau, TAILLE, "  ");
-
 
     // 2. Demande de l'entier à chercher
     printf("\nEntrez l'entier que vous souhaitez chercher : ");
@@ -56,7 +54,7 @@ int main() {
 }
 
 // =================================================================
-// 1. Algorithme de Recherche Dichotomique
+// FONCTIONS DE RECHERCHE ET UTILITAIRES
 // =================================================================
 
 /**
@@ -69,27 +67,21 @@ int recherche_dichotomique(const int tab[], int taille, int cle) {
     int milieu;
 
     while (debut <= fin) {
-        milieu = debut + (fin - debut) / 2; // Calcule le milieu pour éviter l'overflow
+        milieu = debut + (fin - debut) / 2;
         
         if (tab[milieu] == cle) {
-            return milieu; // Élément trouvé !
+            return milieu; 
         }
         
         if (tab[milieu] < cle) {
-            // L'élément se trouve dans la moitié supérieure
             debut = milieu + 1;
         } else {
-            // L'élément se trouve dans la moitié inférieure
             fin = milieu - 1;
         }
     }
     
-    return -1; // Élément absent du tableau
+    return -1; 
 }
-
-// =================================================================
-// 2. Fonctions de Tri et d'Affichage (Réutilisées)
-// =================================================================
 
 /**
  * Remplit le tableau avec des entiers aléatoires entre -50 et 50.
@@ -97,7 +89,6 @@ int recherche_dichotomique(const int tab[], int taille, int cle) {
 void remplir_tableau(int tab[], int taille) {
     int i;
     for (i = 0; i < taille; i++) {
-        // Valeurs aléatoires entre -50 et 50
         tab[i] = (rand() % 101) - 50; 
     }
 }
