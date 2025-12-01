@@ -1,139 +1,115 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <stdbool.h> 
+#include <stdbool.h> // Pour utiliser le type bool
 
-#define TAILLE_MAX 100
-// Nouvelle plage réduite pour garantir des répétitions (0 à 3)
-#define VAL_REPETITION_MAX 3 
+#define NB_PHRASES 10
+#define TAILLE_MAX_PHRASE 100 // Taille maximale pour la phrase à chercher
 
-// =================================================================
-// 1. Définition des structures
-// =================================================================
-
-// Structure pour représenter une couleur (RGBA)
-struct Couleur {
-    unsigned char R; 
-    unsigned char G; 
-    unsigned char B; 
-    unsigned char A; 
-};
-
-// Structure pour stocker les couleurs distinctes et leur compteur
-struct OccurenceCouleur {
-    struct Couleur c; 
-    int compteur;     
-};
-
-// =================================================================
-// Déclarations des fonctions
-// =================================================================
-
-void remplir_tableau_couleurs(struct Couleur tab[], int taille);
-bool comparer_couleurs(struct Couleur c1, struct Couleur c2);
-void afficher_couleur(struct Couleur c);
+// Déclaration de la fonction de comparaison sans bibliothèque standard
+bool comparer_chaines_custom(const char *chaine1, const char *chaine2);
 
 int main() {
-    // Tableau des 100 couleurs originales
-    struct Couleur couleurs_originales[TAILLE_MAX];
+    // 1. Création d'un tableau de 10 phrases
+    // (Tableau de chaînes de caractères / Tableau de tableaux de caractères)
+    const char phrases[NB_PHRASES][TAILLE_MAX_PHRASE] = {
+        "Bonjour, comment ca va ?",
+        "Le temps est magnifique aujourd'hui.",
+        "C'est une belle journee.",
+        "La programmation en C est amusante.",
+        "Les tableaux en C sont puissants.",
+        "Les pointeurs en C peuvent etre deroutants.",
+        "Il fait beau dehors.",
+        "La recherche dans un tableau est interessante.",
+        "Les structures de donnees sont importantes.",
+        "Programmer en C, c'est genial."
+    };
     
-    // Tableau pour stocker les couleurs distinctes et leurs comptes
-    struct OccurenceCouleur couleurs_distinctes[TAILLE_MAX];
-    
-    int nb_couleurs_distinctes = 0; 
-    int i, j; 
+    // Phrase à rechercher (nous utilisons un tableau pour la saisie utilisateur)
+    char phrase_a_chercher[TAILLE_MAX_PHRASE];
+    bool phrase_trouvee = false;
+    int i;
 
-    // Initialisation du générateur aléatoire (une seule fois)
-    srand(time(NULL));
+    printf("--- Recherche d'une Phrase dans un Tableau (Sans strcmp) ---\n\n");
+    
+    // Affichage des phrases disponibles (pour référence)
+    printf("Phrases disponibles :\n");
+    for (i = 0; i < NB_PHRASES; i++) {
+        printf("  %d. %s\n", i + 1, phrases[i]);
+    }
 
-    printf("--- Compteur d'Occurrences de Couleurs Distinctes ---\n");
-    printf("> Les composants de couleur sont limités à la plage [0, %d] pour forcer des répétitions.\n\n", VAL_REPETITION_MAX);
+    // Demander à l'utilisateur d'entrer la phrase à chercher
+    printf("\nEntrez la phrase exacte a chercher (max %d caracteres) :\n> ", TAILLE_MAX_PHRASE - 1);
     
-    // Remplissage du tableau initial avec des couleurs aléatoires et répétées
-    remplir_tableau_couleurs(couleurs_originales, TAILLE_MAX);
-    
-    // =================================================================
-    // 2. Algorithme de Comptage (Recherche Linéaire pour les distinctes)
-    // =================================================================
-    
-    for (i = 0; i < TAILLE_MAX; i++) {
-        struct Couleur couleur_courante = couleurs_originales[i];
-        int index_trouve = -1;
-
-        // Recherche : Vérifier si la couleur existe déjà
-        for (j = 0; j < nb_couleurs_distinctes; j++) {
-            if (comparer_couleurs(couleur_courante, couleurs_distinctes[j].c)) {
-                index_trouve = j;
-                break; 
+    // Utiliser fgets pour lire la ligne, y compris les espaces
+    // Le '\n' lu par fgets doit être retiré pour la comparaison
+    if (fgets(phrase_a_chercher, TAILLE_MAX_PHRASE, stdin) != NULL) {
+        // Retirer le caractère de nouvelle ligne ('\n') ajouté par fgets
+        size_t longueur = 0;
+        while (phrase_a_chercher[longueur] != '\0') {
+            if (phrase_a_chercher[longueur] == '\n') {
+                phrase_a_chercher[longueur] = '\0'; // Remplacer '\n' par le caractère nul de fin
+                break;
             }
+            longueur++;
         }
-
-        // Mise à jour du compteur ou ajout
-        if (index_trouve != -1) {
-            couleurs_distinctes[index_trouve].compteur++;
-        } else {
-            // Nouvelle couleur : l'ajouter
-            if (nb_couleurs_distinctes < TAILLE_MAX) {
-                couleurs_distinctes[nb_couleurs_distinctes].c = couleur_courante;
-                couleurs_distinctes[nb_couleurs_distinctes].compteur = 1;
-                nb_couleurs_distinctes++; 
-            }
-        }
+    } else {
+        return 1; // Erreur de lecture
     }
 
     // =================================================================
-    // 3. Affichage du résultat
+    // Logique de Recherche Linéaire (utilisant la fonction custom)
     // =================================================================
-    printf("Total de couleurs initiales : %d\n", TAILLE_MAX);
-    printf("Nombre de couleurs distinctes trouvées : %d\n\n", nb_couleurs_distinctes);
-    printf("--- Couleurs distinctes et leur nombre d'occurrences ---\n");
-
-    for (i = 0; i < nb_couleurs_distinctes; i++) {
-        // Affichage de la couleur (R G B A) en hexadécimal
-        afficher_couleur(couleurs_distinctes[i].c);
-        
-        // Affichage du compteur
-        printf(": %d\n", couleurs_distinctes[i].compteur);
+    
+    for (i = 0; i < NB_PHRASES; i++) {
+        // Appeler la fonction de comparaison personnalisée
+        if (comparer_chaines_custom(phrase_a_chercher, phrases[i])) {
+            phrase_trouvee = true;
+            break; // Sortir dès que la correspondance est trouvée
+        }
     }
 
-    printf("----------------------------------------------------------\n");
+    // Affichage du résultat final
+    printf("\nRecherche pour \"%s\" :\n", phrase_a_chercher);
+    if (phrase_trouvee) {
+        printf("Resultat : Phrase trouvee\n");
+    } else {
+        printf("Resultat : Phrase non trouvee\n");
+    }
 
+    printf("\n--- Fin de la recherche ---\n");
+    
     return 0;
 }
 
 // =================================================================
-// Implémentation des fonctions
+// Fonction de Comparaison Caractère par Caractère (sans bibliothèque)
 // =================================================================
 
 /**
- * Remplit le tableau avec des couleurs aléatoires dans une plage réduite.
- * MODIFIÉ pour utiliser VAL_REPETITION_MAX.
+ * Compare deux chaînes de caractères, caractère par caractère.
+ * Retourne true si les chaînes sont identiques (incluant la fin '\0'), false sinon.
+ * @param chaine1 La première chaîne (celle cherchée).
+ * @param chaine2 La seconde chaîne (celle du tableau).
  */
-void remplir_tableau_couleurs(struct Couleur tab[], int taille) {
-    int i;
-    int max = VAL_REPETITION_MAX; // Limite supérieure pour rand()
-    for (i = 0; i < taille; i++) {
-        tab[i].R = (unsigned char)(rand() % (max + 1));
-        tab[i].G = (unsigned char)(rand() % (max + 1));
-        tab[i].B = (unsigned char)(rand() % (max + 1));
-        tab[i].A = (unsigned char)(rand() % (max + 1));
+bool comparer_chaines_custom(const char *chaine1, const char *chaine2) {
+    int i = 0;
+
+    // Boucle tant que nous ne sommes pas à la fin des deux chaînes
+    while (chaine1[i] != '\0' || chaine2[i] != '\0') {
+        
+        // 1. Comparer les caractères actuels
+        if (chaine1[i] != chaine2[i]) {
+            return false; // Caractère différent trouvé, les chaînes ne sont pas identiques
+        }
+        
+        i++;
     }
-}
 
-/**
- * Compare deux structures Couleur et retourne true si elles sont identiques.
- */
-bool comparer_couleurs(struct Couleur c1, struct Couleur c2) {
-    return (c1.R == c2.R &&
-            c1.G == c2.G &&
-            c1.B == c2.B &&
-            c1.A == c2.A);
-}
+    // 2. Vérification finale : Si les chaînes sont de longueurs différentes
+    //    (par exemple, si l'une se termine et l'autre non, la boucle est finie
+    //    mais les '\0' ne sont pas au même endroit).
+    //    Si la boucle while est sortie, cela signifie que le '\0' a été atteint
+    //    simultanément dans les deux chaînes.
 
-/**
- * Affiche une couleur au format hexadécimal.
- */
-void afficher_couleur(struct Couleur c) {
-    // %02X affiche l'unsigned char en hexadécimal sur deux chiffres
-    printf("0x%02X 0x%02X 0x%02X 0x%02X", c.R, c.G, c.B, c.A);
+    // Si nous arrivons ici, les chaînes sont identiques, y compris le caractère nul final.
+    return true; 
 }
